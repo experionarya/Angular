@@ -1,0 +1,24 @@
+<html ng-app="countryApp">
+<head>
+	<meta charset="utf-8">
+	<title>Angular</title>
+	<script src = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"> </script>
+	<script>
+		var countryApp=angular.module("countryApp",[]);
+		countryApp.controller('CountryCtrl',function($scope) {
+			  $scope.countries=[
+			   {"name":'INDIA',"population":"123456789"},
+			   {"name":'RUSSIA',"population":"1234"},
+			   {"name":'UK',"population":"1234789"}
+			  ];
+		});
+
+	</script>
+</head>
+<body ng-controller="CountryCtrl">
+	<ul>
+		<li ng-repeat="country in countries">{{country.name}}-population{{country.population}}</li>
+	</ul>
+	
+</body>
+</html>

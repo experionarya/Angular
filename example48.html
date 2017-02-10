@@ -1,0 +1,83 @@
+<html ng-app="countryApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Angular.js Example</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
+    <script>
+      var countryApp = angular.module('countryApp', ['ngRoute']);
+
+      countryApp.config(function($routeProvider) {
+        $routeProvider.
+          when('/', {
+            templateUrl: 'country-list1.html',
+            controller: 'CountryListCtrl'
+          }).
+          when('/:countryId', {
+            templateUrl: 'country-detail1.html',
+            controller: 'CountryDetailCtrl'
+          }).
+          otherwise({
+            redirectTo: '/'
+          });
+      });
+
+      countryApp.factory('countries', function($http){
+        return {
+          list: function (callback){
+            $http({
+              method:'GET',
+              url:'countries4.json',
+              cache: true
+            }).success(callback);
+          },
+
+          find: function(id, callback){
+            console.log(id);
+            $http({
+              method:'GET',
+              url:'country_' + id + '.json',
+              cache: true
+            }).success(callback);
+          }
+        };
+      });
+
+      countryApp.directive('country', function(){
+        return {
+          scope: {
+            country: '='
+          },
+          restrict:'A',
+          templateUrl:'country.html',
+          controller:function($scope, countries){
+                 console.log($scope.country.id);
+            countries.find($scope.country.id, function(country) {
+              $scope.flagURL = country.flagURL;
+            });
+          }
+        };
+      });
+
+      countryApp.controller('CountryListCtrl', function ($scope, countries){
+        countries.list(function(countries) {
+          $scope.countries = countries;
+          console.log(countries);
+        });
+      });
+
+      countryApp.controller('CountryDetailCtrl', function ($scope, $routeParams, countries){
+        console.log($routeParams);
+        countries.find($routeParams.countryId, function(country) {
+              console.log($routeParams.countryId);
+          $scope.country = country;
+          console.log(country);
+        });
+      });
+
+    </script>
+  </head>
+  <body>
+    <div ng-view></div>
+  </body>
+</html>
